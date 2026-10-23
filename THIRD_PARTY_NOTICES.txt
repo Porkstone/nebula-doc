@@ -1,0 +1,63 @@
+Nebula Doc - third-party software and source availability
+
+Nebula Doc's original application code is licensed under the MIT License in
+LICENSE (installed as resources/licenses/Nebula-Doc-MIT.txt). This licence
+does not replace the licences of third-party software distributed with it.
+Each third-party component retains its own copyright and licence terms.
+
+LibreOffice
+-----------
+The bundled document engine is an unmodified, privately extracted copy of
+LibreOffice 26.8.1.1 for Windows x64, build
+bf6ef2662401c7d6dce671ab4deb26ee0af3a7c1, from The Document Foundation.
+Nebula's Python worker and Electron application are separate original files;
+no changes have been made to LibreOffice's source or executable files.
+
+LibreOffice is made available under the Mozilla Public License 2.0 and
+includes components, dictionaries, fonts and artwork with additional terms.
+The upstream notices, copyright statements and full licence texts are kept
+in resources/libreoffice/license.txt, LICENSE.html, NOTICE, readmes/ and
+the component-specific licence files throughout that directory.
+
+Licence information:
+https://www.libreoffice.org/licenses/
+https://www.mozilla.org/en-US/MPL/2.0/
+
+The corresponding LibreOffice source code is available under its original
+licences from The Document Foundation. For this bundled version, obtain:
+https://download.documentfoundation.org/libreoffice/src/26.8.1/libreoffice-26.8.1.1.tar.xz
+https://download.documentfoundation.org/libreoffice/src/26.8.1/libreoffice-dictionaries-26.8.1.1.tar.xz
+https://download.documentfoundation.org/libreoffice/src/26.8.1/libreoffice-help-26.8.1.1.tar.xz
+https://download.documentfoundation.org/libreoffice/src/26.8.1/libreoffice-translations-26.8.1.1.tar.xz
+
+Official source download instructions:
+https://www.libreoffice.org/download-other/
+Source repository: https://git.libreoffice.org/core
+Release tag: libreoffice-26.8.1.1
+External dependency versions and source downloads are recorded in the
+download.lst file and external/ build definitions in that source release.
+Upstream external source archive: https://dev-www.libreoffice.org/src/
+
+Users can supply a replacement LibreOffice runtime using the
+NEBULA_LIBREOFFICE environment variable. Nothing in Nebula's MIT licence
+restricts rights granted by LibreOffice's or its components' licences.
+
+Electron, Chromium and Node.js
+-----------------------------
+Electron's MIT licence is included in the application's top-level LICENSE
+file supplied by the Electron runtime. This is distinct from Nebula Doc's
+MIT licence in resources/licenses/Nebula-Doc-MIT.txt. The runtime's bundled
+third-party notices are in LICENSES.chromium.html alongside the executable.
+Those notices describe the licences of the runtime and its dependencies.
+Electron source: https://github.com/electron/electron/tree/v45.0.0
+Chromium and Node.js source information is provided in the runtime notices
+and upstream release documentation.
+
+JavaScript packages
+-------------------
+React, TipTap, ProseMirror and the other JavaScript dependencies retain
+their individual licences. The current production dependency metadata
+reports MIT for all packages except lucide-react, which reports ISC.
+Package copyright and licence files are retained under node_modules/ in
+resources/app.asar. See each package's licence for its complete terms,
+including notices for any incorporated works.

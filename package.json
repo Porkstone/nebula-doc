@@ -1,0 +1,103 @@
+{
+  "name": "nebula-doc",
+  "private": true,
+  "author": "Nebula Doc contributors",
+  "license": "MIT",
+  "version": "0.1.0",
+  "description": "A local editor for binary Word 97–2003 documents",
+  "main": "electron/main.mjs",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "vite",
+    "start": "electron .",
+    "setup:engine": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-engine.ps1",
+    "test": "node --import tsx --test tests/*.test.mjs",
+    "test:electron": "node scripts/electron-smoke.mjs",
+    "test:sample": "node scripts/roundtrip.mjs",
+    "dist:win": "pnpm build && electron-builder --win nsis",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "build": {
+    "electronDist": "node_modules/electron/dist",
+    "afterPack": "scripts/after-pack.cjs",
+    "appId": "com.nebula.doc",
+    "productName": "Nebula Doc",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.txt",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "LICENSE",
+        "to": "licenses/Nebula-Doc-MIT.txt"
+      },
+      {
+        "from": "THIRD_PARTY_NOTICES.txt",
+        "to": "licenses/THIRD_PARTY_NOTICES.txt"
+      },
+      {
+        "from": "engine",
+        "to": "engine",
+        "filter": [
+          "*.py"
+        ]
+      },
+      {
+        "from": ".cache/libreoffice",
+        "to": "libreoffice",
+        "filter": [
+          "**/*",
+          "!*.msi"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "artifactName": "Nebula-Doc-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "@electron/asar": "3.4.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3",
+    "playwright": "^1.64.1",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.4",
+    "wait-on": "^9.5.1"
+  },
+  "dependencies": {
+    "@tiptap/core": "^3.32.0",
+    "@tiptap/extension-font-family": "^3.32.0",
+    "@tiptap/extension-paragraph": "^3.32.0",
+    "@tiptap/extension-table": "^3.32.0",
+    "@tiptap/extension-text-align": "^3.32.0",
+    "@tiptap/extension-text-style": "^3.32.0",
+    "@tiptap/extension-underline": "^3.32.0",
+    "@tiptap/pm": "^3.32.0",
+    "@tiptap/react": "^3.32.0",
+    "@tiptap/starter-kit": "^3.32.0",
+    "lucide-react": "^1.61.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}
