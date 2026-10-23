@@ -31,8 +31,6 @@
     "files": [
       "dist/**/*",
       "electron/**/*",
-      "LICENSE",
-      "THIRD_PARTY_NOTICES.txt",
       "package.json"
     ],
     "extraResources": [

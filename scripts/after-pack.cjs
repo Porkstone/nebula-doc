@@ -12,7 +12,7 @@ module.exports = async ({ appOutDir }) => {
   if (manifest.license !== 'MIT') throw new Error('Packaged application must declare its MIT licence.')
   for (const [source, destination] of [['LICENSE', 'licenses/Nebula-Doc-MIT.txt'], ['THIRD_PARTY_NOTICES.txt', 'licenses/THIRD_PARTY_NOTICES.txt']]) {
     const expected = await fs.readFile(path.join(__dirname, '..', source))
-    if (!asar.extractFile(archive, source).equals(expected) || !(await fs.readFile(path.join(resources, destination))).equals(expected)) throw new Error(`Packaged licence notice does not match its source: ${source}`)
+    if (!(await fs.readFile(path.join(resources, destination))).equals(expected)) throw new Error(`Packaged licence notice does not match its source: ${source}`)
   }
   for (const notice of ['license.txt', 'LICENSE.html', 'NOTICE']) {
     const original = await fs.readFile(path.join(__dirname, '../.cache/libreoffice', notice))
