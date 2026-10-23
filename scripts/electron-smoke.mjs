@@ -29,6 +29,21 @@ try {
   assert.equal(await page.locator('.tiptap p[data-block-id]').count(), 255)
   assert.equal(await page.locator('.bookmark-item').count(), 33)
   await page.screenshot({ path: 'test-output/editor.png' })
+  const signature = page.locator('.tiptap p').filter({ hasText: 'Signature Code:' })
+  assert.equal(await signature.count(), 1)
+  assert.notEqual(await signature.getAttribute('contenteditable'), 'false', 'Signature label must be editable')
+  await page.locator('.tiptap').focus()
+  await signature.evaluate(element => {
+    element.scrollIntoView({ block: 'center' })
+    const range = document.createRange()
+    range.selectNodeContents(element)
+    range.collapse(false)
+    const selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
+  })
+  await page.keyboard.type(' QA-1234')
+  assert.ok((await signature.innerText()).includes('Signature Code: QA-1234'))
   await page.getByRole('button', { name: 'CustomerName', exact: true }).click()
   await page.keyboard.type('Alex Morgan')
   await page.keyboard.down('Shift')
@@ -58,6 +73,7 @@ try {
   assert.ok(await page.locator('[data-block-id=p9] span[style*="Georgia"]').count())
   assert.ok(await page.locator('[data-block-id=p9] strong').count())
   assert.equal(await page.locator('.bookmark-item').count(), 34)
+  assert.ok((await page.locator('.tiptap p').filter({ hasText: 'Signature Code:' }).innerText()).includes('Signature Code: QA-1234'))
   // Rename and delete are renderer transactions persisted through native .doc save.
   await page.getByRole('button', { name: 'NewCustomerBookmark', exact: true }).click()
   await page.getByRole('button', { name: 'Rename NewCustomerBookmark', exact: true }).click()
@@ -69,7 +85,7 @@ try {
   await page.getByText('Saved as Word 97–2003 .doc', { exact: true }).waitFor({ timeout: 120000 })
   await page.screenshot({ path: 'test-output/editor-edited.png' })
   assert.deepEqual(errors, [])
-  console.log('PASS: Electron launch, sample open, 255 paragraphs, 33 body bookmarks, native edit/save/reopen, bookmark add/rename/delete, no renderer errors.')
+  console.log('PASS: Electron launch, sample open, signature-line editing, 255 paragraphs, 33 body bookmarks, native edit/save/reopen, bookmark add/rename/delete, no renderer errors.')
 } catch (error) {
   if (page) { await page.screenshot({ path: 'test-output/electron-failure.png' }).catch(() => {}); await writeFile('test-output/electron-failure.txt', await page.locator('body').innerText().catch(() => '')) }
   throw error

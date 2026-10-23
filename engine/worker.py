@@ -22,6 +22,27 @@ def utf16len(value):
     return len(value.encode('utf-16-le')) // 2
 
 
+def is_zero_width_floating_frame(portion):
+    """Floating anchors add no text positions; inline objects must stay locked."""
+    if portion.String:
+        return False
+    try:
+        contents = portion.createContentEnumeration('com.sun.star.text.TextContent')
+        found = False
+        while contents.hasMoreElements():
+            frame = contents.nextElement()
+            if frame.AnchorType.value not in ('AT_CHARACTER', 'AT_PARAGRAPH'):
+                return False
+            anchor = frame.Anchor
+            if anchor.Text.compareRegionStarts(anchor.Start, anchor.End) != 0:
+                return False
+            found = True
+        return found
+    except Exception:
+        # Unknown objects keep the conservative read-only behaviour.
+        return False
+
+
 def cursor_at(paragraph, start, end=None):
     cursor = paragraph.Text.createTextCursorByRange(paragraph.Start)
     remaining = start
@@ -98,7 +119,9 @@ class Worker:
                         edges['end'] = point
                     else:
                         edges['start' if part.IsStart else 'end'] = point
-            if kind not in ('Text', 'Bookmark', 'SoftPageBreak'):
+            if kind not in ('Text', 'Bookmark', 'SoftPageBreak') and not (
+                kind == 'Frame' and is_zero_width_floating_frame(part)
+            ):
                 read_only = True
             text = part.String
             offset += utf16len(text)
@@ -112,8 +135,8 @@ class Worker:
                                  underline=bool(part.CharUnderline), color='#%06x' % (color if color >= 0 else 0x20242b)))
             except Exception:
                 runs.append(dict(text=text, font='Arial', size=11, bold=False, italic=False, underline=False, color='#20242b'))
-        # Fields and embedded objects have text positions that differ from display text.
-        # Keep those paragraphs intact, rather than flattening native Word structures.
+        # Fields and inline objects can have positions unlike their display text.
+        # Floating frames have zero-width anchors and survive ordinary range edits.
         merged = []
         for run in runs:
             if merged and all(merged[-1][key] == run[key] for key in run if key != 'text'):

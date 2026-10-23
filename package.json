@@ -3,7 +3,7 @@
   "private": true,
   "author": "Nebula Doc contributors",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A local editor for binary Word 97–2003 documents",
   "main": "electron/main.mjs",
   "type": "module",
@@ -15,6 +15,7 @@
     "test": "node --import tsx --test tests/*.test.mjs",
     "test:electron": "node scripts/electron-smoke.mjs",
     "test:sample": "node scripts/roundtrip.mjs",
+    "test:signature": "node scripts/signature-roundtrip.mjs",
     "dist:win": "pnpm build && electron-builder --win nsis",
     "build": "tsc && vite build",
     "preview": "vite preview"
