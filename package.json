@@ -3,7 +3,7 @@
   "private": true,
   "author": "Nebula Doc contributors",
   "license": "MIT",
-  "version": "0.1.1",
+  "version": "0.1.2-slim.1",
   "description": "A local editor for binary Word 97–2003 documents",
   "main": "electron/main.mjs",
   "type": "module",
@@ -16,17 +16,23 @@
     "test:electron": "node scripts/electron-smoke.mjs",
     "test:sample": "node scripts/roundtrip.mjs",
     "test:signature": "node scripts/signature-roundtrip.mjs",
+    "package:engine": "node scripts/prepare-slim-engine.cjs",
     "dist:win": "pnpm build && electron-builder --win nsis",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "build": {
     "electronDist": "node_modules/electron/dist",
+    "beforePack": "scripts/prepare-slim-engine.cjs",
     "afterPack": "scripts/after-pack.cjs",
-    "appId": "com.nebula.doc",
-    "productName": "Nebula Doc",
+    "appId": "com.nebula.doc.slim-experiment",
+    "productName": "Nebula Doc Slim Experiment",
+    "extraMetadata": {
+      "name": "nebula-doc-slim-experiment"
+    },
+    "electronLanguages": ["en-US", "en-GB"],
     "directories": {
-      "output": "release"
+      "output": "release/slim-experiment"
     },
     "files": [
       "dist/**/*",
@@ -43,6 +49,10 @@
         "to": "licenses/THIRD_PARTY_NOTICES.txt"
       },
       {
+        "from": ".cache/slim-package-summary.json",
+        "to": "licenses/slim-package-summary.json"
+      },
+      {
         "from": "engine",
         "to": "engine",
         "filter": [
@@ -50,17 +60,16 @@
         ]
       },
       {
-        "from": ".cache/libreoffice",
+        "from": ".cache/libreoffice-slim",
         "to": "libreoffice",
         "filter": [
-          "**/*",
-          "!*.msi"
+          "**/*"
         ]
       }
     ],
     "win": {
       "target": "nsis",
-      "artifactName": "Nebula-Doc-Setup-${version}.${ext}"
+      "artifactName": "Nebula-Doc-Slim-Experiment-Setup-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,

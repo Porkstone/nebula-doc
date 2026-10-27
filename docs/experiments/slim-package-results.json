@@ -1,0 +1,102 @@
+{
+  "branch": "experiment/slim-package",
+  "version": "0.1.2-slim.1",
+  "baselineVersion": "0.1.1",
+  "installer": {
+    "path": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\slim-experiment\\Nebula-Doc-Slim-Experiment-Setup-0.1.2-slim.1.exe",
+    "sha256": "4bd107a601a6e46f24ac876e8546462923c1c9618121e8c2d8fe01b895d4116c",
+    "bytes": 306480123,
+    "baselineBytes": 555425799
+  },
+  "unpacked": {
+    "baseline": {
+      "bytes": 1998932281,
+      "files": 19583
+    },
+    "slim": {
+      "bytes": 1022944634,
+      "files": 5514
+    }
+  },
+  "summary": {
+    "schemaVersion": 1,
+    "experiment": "resource-reduced LibreOffice 26.8.1.1",
+    "policySha256": "dfed9ca3a9c829a9ed817a340db2d68c54d24926dc19b14f65888933d676a159",
+    "retained": {
+      "files": 5488,
+      "bytes": 653229445
+    },
+    "removed": {
+      "files": 14014,
+      "bytes": 945714380,
+      "categories": {
+        "Administrative installer": {
+          "files": 1,
+          "bytes": 19836928
+        },
+        "Offline help": {
+          "files": 5334,
+          "bytes": 11167641
+        },
+        "Generated Python bytecode": {
+          "files": 84,
+          "bytes": 2061511
+        },
+        "Non-English user-interface translations": {
+          "files": 3872,
+          "bytes": 271053031
+        },
+        "Alternative icon themes": {
+          "files": 16,
+          "bytes": 61625152
+        },
+        "Non-English dictionaries and optional extensions": {
+          "files": 4025,
+          "bytes": 458194625
+        },
+        "Gallery assets": {
+          "files": 175,
+          "bytes": 13489890
+        },
+        "Non-English translated registry labels": {
+          "files": 244,
+          "bytes": 95272057
+        },
+        "Document templates": {
+          "files": 139,
+          "bytes": 8068470
+        },
+        "Document wizards": {
+          "files": 124,
+          "bytes": 4945075
+        }
+      }
+    },
+    "retainedResources": [
+      "All native executable and DLL files",
+      "All bundled fonts",
+      "English UI resources and dictionary bundle",
+      "Core registry and all document filters",
+      "Colibre light/dark, raster/SVG icon themes",
+      "Original notices for retained components"
+    ],
+    "limits": [
+      "Only English UI translations and dictionary bundle are included.",
+      "Native code and startup/profile behavior are unchanged.",
+      "The application continues to reject .docx."
+    ]
+  },
+  "nativeFiles": 240,
+  "fontFiles": 128,
+  "checks": [
+    "TypeScript and Vite production build",
+    "Two editor-model unit tests",
+    "Five floating-frame Python guard tests",
+    "Reduced-engine text/font/bookmark edits, repeated save/reopen, binary .doc output and .docx rejection",
+    "Signature text/font regression, frame preservation and all 36 bookmarks",
+    "Packaged Electron UI edits/save/reopen, bookmark operations, 255 body paragraphs and 33 body bookmarks",
+    "Packaged Electron .docx and renamed-ZIP rejection",
+    "Isolated Electron name and user-data directory",
+    "5488 retained upstream files verified byte for byte after the UI tests"
+  ]
+}

@@ -14,6 +14,11 @@ const packaged = process.env.NEBULA_TEST_EXECUTABLE
 const app = await electron.launch({ executablePath: packaged || electronPath, args: packaged ? [] : ['.'], env, timeout: 60000 })
 let page
 try {
+  if (packaged && (await app.evaluate(({ app }) => app.getVersion())).includes('-slim.')) {
+    const identity = await app.evaluate(({ app }) => ({ name: app.getName(), userData: app.getPath('userData') }))
+    assert.equal(identity.name, 'nebula-doc-slim-experiment')
+    assert.equal(path.basename(identity.userData), 'nebula-doc-slim-experiment')
+  }
   page = await app.firstWindow()
   const errors = []; page.on('pageerror', error => errors.push(error.message))
   await page.getByText('Pick up where you left off.').waitFor()
@@ -45,14 +50,27 @@ try {
   await page.keyboard.type(' QA-1234')
   assert.ok((await signature.innerText()).includes('Signature Code: QA-1234'))
   await page.getByRole('button', { name: 'CustomerName', exact: true }).click()
+  // TipTap's focus command restores DOM focus on the next animation frame.
+  // Wait for that restoration before sending keystrokes, including under load.
+  await page.waitForFunction(() => {
+    const anchor = window.getSelection()?.anchorNode
+    const element = anchor?.nodeType === Node.ELEMENT_NODE ? anchor : anchor?.parentElement
+    return document.activeElement === document.querySelector('.tiptap') && element?.closest('[data-block-id]')?.getAttribute('data-block-id') === 'p9'
+  })
   await page.keyboard.type('Alex Morgan')
+  assert.ok((await page.locator('[data-block-id=p9]').innerText()).includes('Alex Morgan'))
   await page.keyboard.down('Shift')
   for (let index = 0; index < 'Alex Morgan'.length; index++) await page.keyboard.press('ArrowLeft')
   await page.keyboard.up('Shift')
+  const settleFocus = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
   await page.getByRole('combobox', { name: 'Font family' }).selectOption('Georgia')
+  await settleFocus()
   await page.getByRole('combobox', { name: 'Font size', exact: true }).selectOption('14')
+  await settleFocus()
   await page.getByRole('button', { name: 'bold', exact: true }).click()
+  await settleFocus()
   await page.locator('.tiptap').press('End')
+  await page.waitForFunction(() => window.getSelection()?.isCollapsed)
   await page.locator('.tiptap').press('Enter')
   await page.keyboard.type('Second line')
   assert.ok((await page.locator('[data-block-id=p9]').innerText()).includes('Alex Morgan'))

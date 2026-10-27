@@ -7,11 +7,17 @@ Each third-party component retains its own copyright and licence terms.
 
 LibreOffice
 -----------
-The bundled document engine is an unmodified, privately extracted copy of
+The bundled document engine is a resource-reduced, privately extracted copy of
 LibreOffice 26.8.1.1 for Windows x64, build
 bf6ef2662401c7d6dce671ab4deb26ee0af3a7c1, from The Document Foundation.
 Nebula's Python worker and Electron application are separate original files;
-no changes have been made to LibreOffice's source or executable files.
+no changes have been made to LibreOffice's source or executable files. Optional
+non-English translations/dictionaries, offline help, galleries, document
+templates/wizards and alternative icon themes are excluded for this experiment.
+All native executable/library files, fonts, English dictionaries and retained
+component notices are kept. The retained upstream files are copied byte for
+byte. See resources/licenses/slim-package-summary.json for the exclusion totals
+and scripts/slim-package-policy.cjs in the Nebula source for the resource policy.
 
 LibreOffice is made available under the Mozilla Public License 2.0 and
 includes components, dictionaries, fonts and artwork with additional terms.
