@@ -1,0 +1,416 @@
+{
+  "date": "2026-10-27",
+  "release": "0.1.1",
+  "sourceCommit": "acd1ca0984e07c4513c5b548297bc387123cf7c4",
+  "units": "bytes and milliseconds unless explicitly marked seconds",
+  "size": {
+    "totalBytes": 1998932281,
+    "totalFiles": 19583,
+    "installerBytes": 555425799,
+    "main": [
+      {
+        "name": "LibreOffice",
+        "bytes": 1579176284,
+        "files": 19504
+      },
+      {
+        "name": "Electron runtime",
+        "bytes": 374094877,
+        "files": 74
+      },
+      {
+        "name": "Nebula app archive",
+        "bytes": 45615084,
+        "files": 1
+      },
+      {
+        "name": "Python worker",
+        "bytes": 41589,
+        "files": 2
+      },
+      {
+        "name": "Nebula notices",
+        "bytes": 4447,
+        "files": 2
+      }
+    ],
+    "dictionaryBytes": 477381892,
+    "localeBytes": 274521217,
+    "iconArchiveBytes": 75188815,
+    "asar": [
+      {
+        "name": "node_modules",
+        "bytes": 43362348,
+        "files": 5773
+      },
+      {
+        "name": "dist",
+        "bytes": 731055,
+        "files": 5
+      },
+      {
+        "name": "electron",
+        "bytes": 9612,
+        "files": 3
+      },
+      {
+        "name": "package.json",
+        "bytes": 761,
+        "files": 1
+      }
+    ],
+    "asarModules": [
+      {
+        "name": "lucide-react",
+        "bytes": 24258146,
+        "files": 4382
+      },
+      {
+        "name": "react-dom",
+        "bytes": 8066435,
+        "files": 42
+      },
+      {
+        "name": "@tiptap",
+        "bytes": 7232901,
+        "files": 1064
+      },
+      {
+        "name": "prosemirror-view",
+        "bytes": 780339,
+        "files": 21
+      },
+      {
+        "name": "prosemirror-model",
+        "bytes": 438562,
+        "files": 21
+      },
+      {
+        "name": "prosemirror-tables",
+        "bytes": 426646,
+        "files": 9
+      },
+      {
+        "name": "@floating-ui",
+        "bytes": 419013,
+        "files": 33
+      },
+      {
+        "name": "prosemirror-transform",
+        "bytes": 288661,
+        "files": 18
+      },
+      {
+        "name": "fast-equals",
+        "bytes": 281902,
+        "files": 10
+      },
+      {
+        "name": "linkifyjs",
+        "bytes": 257680,
+        "files": 8
+      },
+      {
+        "name": "react",
+        "bytes": 177421,
+        "files": 26
+      },
+      {
+        "name": "prosemirror-state",
+        "bytes": 142967,
+        "files": 13
+      },
+      {
+        "name": "prosemirror-commands",
+        "bytes": 111838,
+        "files": 9
+      },
+      {
+        "name": "prosemirror-changeset",
+        "bytes": 91774,
+        "files": 10
+      },
+      {
+        "name": "scheduler",
+        "bytes": 82212,
+        "files": 14
+      },
+      {
+        "name": "prosemirror-history",
+        "bytes": 60893,
+        "files": 9
+      },
+      {
+        "name": "prosemirror-schema-list",
+        "bytes": 46320,
+        "files": 9
+      },
+      {
+        "name": "prosemirror-inputrules",
+        "bytes": 39248,
+        "files": 12
+      },
+      {
+        "name": "prosemirror-gapcursor",
+        "bytes": 36725,
+        "files": 10
+      },
+      {
+        "name": "prosemirror-dropcursor",
+        "bytes": 29109,
+        "files": 7
+      },
+      {
+        "name": "use-sync-external-store",
+        "bytes": 27922,
+        "files": 17
+      },
+      {
+        "name": "rope-sequence",
+        "bytes": 25159,
+        "files": 7
+      },
+      {
+        "name": "prosemirror-keymap",
+        "bytes": 20062,
+        "files": 9
+      },
+      {
+        "name": "orderedmap",
+        "bytes": 11411,
+        "files": 5
+      },
+      {
+        "name": "w3c-keyname",
+        "bytes": 7242,
+        "files": 6
+      },
+      {
+        "name": "@types",
+        "bytes": 1760,
+        "files": 2
+      }
+    ]
+  },
+  "app": [
+    {
+      "run": 1,
+      "launchConnectionMs": 2041.7456000000002,
+      "welcomeReadyMs": 2596.3585000000003,
+      "opens": [
+        {
+          "open": 1,
+          "totalMs": 36335.200000000186,
+          "bridgeMs": 35585.36,
+          "uiAndObservationMs": 749.8400000001857,
+          "paragraphs": 255,
+          "bookmarks": 33
+        },
+        {
+          "open": 2,
+          "totalMs": 4865.899999999907,
+          "bridgeMs": 3958.7888999999996,
+          "uiAndObservationMs": 907.1110999999073,
+          "paragraphs": 255,
+          "bookmarks": 33
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "launchConnectionMs": 443.83230000000185,
+      "welcomeReadyMs": 1015.9945000000007,
+      "opens": [
+        {
+          "open": 1,
+          "totalMs": 35272.39999999991,
+          "bridgeMs": 34452.862,
+          "uiAndObservationMs": 819.5379999999059,
+          "paragraphs": 255,
+          "bookmarks": 33
+        },
+        {
+          "open": 2,
+          "totalMs": 4448.600000000093,
+          "bridgeMs": 3724.2212,
+          "uiAndObservationMs": 724.3788000000932,
+          "paragraphs": 255,
+          "bookmarks": 33
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "launchConnectionMs": 573.2966000000015,
+      "welcomeReadyMs": 1147.1793000000034,
+      "opens": [
+        {
+          "open": 1,
+          "totalMs": 34123.200000000186,
+          "bridgeMs": 33283.8642,
+          "uiAndObservationMs": 839.3358000001826,
+          "paragraphs": 255,
+          "bookmarks": 33
+        },
+        {
+          "open": 2,
+          "totalMs": 4901.399999999907,
+          "bridgeMs": 4089.0002999999997,
+          "uiAndObservationMs": 812.3996999999072,
+          "paragraphs": 255,
+          "bookmarks": 33
+        }
+      ]
+    }
+  ],
+  "engine": [
+    {
+      "run": 1,
+      "open": 1,
+      "readyMs": 38333.638900000005,
+      "requestMs": 14056.481500000002,
+      "responseBytes": 67975,
+      "copySeconds": 0.00325120000024981,
+      "importSeconds": 10.458708999999999,
+      "describeSeconds": 3.567130100000213,
+      "runsSeconds": 1.8621584000024995,
+      "startup": {
+        "workerImportSeconds": 0.5962741000003007,
+        "connectAndDesktopSeconds": 37.21272790000012
+      }
+    },
+    {
+      "run": 1,
+      "open": 2,
+      "readyMs": 38333.638900000005,
+      "requestMs": 4450.733399999997,
+      "responseBytes": 67975,
+      "copySeconds": 0.0018512999999984459,
+      "importSeconds": 0.43491030000041064,
+      "describeSeconds": 3.915384300000369,
+      "runsSeconds": 2.553311299996494,
+      "startup": {
+        "workerImportSeconds": 0.5962741000003007,
+        "connectAndDesktopSeconds": 37.21272790000012
+      }
+    },
+    {
+      "run": 2,
+      "open": 1,
+      "readyMs": 24476.306600000004,
+      "requestMs": 5038.2359,
+      "responseBytes": 67975,
+      "copySeconds": 0.0015984000001481036,
+      "importSeconds": 2.001545499999793,
+      "describeSeconds": 3.027520000000095,
+      "runsSeconds": 2.036074300002838,
+      "startup": {
+        "workerImportSeconds": 0.1807103000001007,
+        "connectAndDesktopSeconds": 23.96990770000002
+      }
+    },
+    {
+      "run": 2,
+      "open": 2,
+      "readyMs": 24476.306600000004,
+      "requestMs": 3883.5334000000003,
+      "responseBytes": 67975,
+      "copySeconds": 0.001707899999928486,
+      "importSeconds": 0.3105377000001681,
+      "describeSeconds": 3.5195080000003145,
+      "runsSeconds": 2.2636968999913734,
+      "startup": {
+        "workerImportSeconds": 0.1807103000001007,
+        "connectAndDesktopSeconds": 23.96990770000002
+      }
+    },
+    {
+      "run": 3,
+      "open": 1,
+      "readyMs": 27632.516200000013,
+      "requestMs": 7267.99040000001,
+      "responseBytes": 67975,
+      "copySeconds": 0.0028204999998706626,
+      "importSeconds": 2.4048290999999153,
+      "describeSeconds": 4.847517600000174,
+      "runsSeconds": 3.2566049000047315,
+      "startup": {
+        "workerImportSeconds": 0.17576000000008207,
+        "connectAndDesktopSeconds": 27.037139600000046
+      }
+    },
+    {
+      "run": 3,
+      "open": 2,
+      "readyMs": 27632.516200000013,
+      "requestMs": 4425.316099999996,
+      "responseBytes": 67975,
+      "copySeconds": 0.0028531999996630475,
+      "importSeconds": 0.3118165000000772,
+      "describeSeconds": 3.9315722000001188,
+      "runsSeconds": 2.565375799998492,
+      "startup": {
+        "workerImportSeconds": 0.17576000000008207,
+        "connectAndDesktopSeconds": 27.037139600000046
+      }
+    }
+  ],
+  "reuse": [
+    {
+      "run": 1,
+      "profile": "new",
+      "readyMs": 26758.943900000002
+    },
+    {
+      "run": 2,
+      "profile": "reused",
+      "readyMs": 9965.220699999998
+    },
+    {
+      "run": 3,
+      "profile": "reused",
+      "readyMs": 9867.473699999995
+    }
+  ],
+  "batch": [
+    {
+      "original": {
+        "paragraphs": 255,
+        "runsSeconds": 2.345971000001555,
+        "describeSeconds": 3.7429011999997783
+      },
+      "profile": {
+        "paragraphs": 255,
+        "runsSeconds": 1.9993347999970865,
+        "describeSeconds": 3.4064367999999376
+      },
+      "equal": true
+    },
+    {
+      "original": {
+        "paragraphs": 255,
+        "runsSeconds": 2.3241234999968583,
+        "describeSeconds": 3.7210642000000007
+      },
+      "profile": {
+        "paragraphs": 255,
+        "runsSeconds": 2.165074999998069,
+        "describeSeconds": 3.6669347000001835
+      },
+      "equal": true
+    },
+    {
+      "original": {
+        "paragraphs": 255,
+        "runsSeconds": 2.3171632000030513,
+        "describeSeconds": 3.6783642999998847
+      },
+      "profile": {
+        "paragraphs": 255,
+        "runsSeconds": 1.9461176999980125,
+        "describeSeconds": 3.331257600000299
+      },
+      "equal": true
+    }
+  ]
+}
