@@ -61,18 +61,20 @@ def cursor_at(paragraph, start, end=None):
     return cursor
 
 
+def connect(pipe):
+    local = uno.getComponentContext()
+    resolver = local.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', local)
+    for attempt in range(600):
+        try:
+            return resolver.resolve('uno:pipe,name=%s;urp;StarOffice.ComponentContext' % pipe)
+        except Exception:
+            time.sleep(0.1)
+    raise RuntimeError('Could not connect to the local LibreOffice engine.')
+
+
 class Worker:
-    def __init__(self, pipe):
-        local = uno.getComponentContext()
-        resolver = local.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', local)
-        for attempt in range(600):
-            try:
-                self.ctx = resolver.resolve('uno:pipe,name=%s;urp;StarOffice.ComponentContext' % pipe)
-                break
-            except Exception:
-                time.sleep(0.1)
-        else:
-            raise RuntimeError('Could not connect to the local LibreOffice engine.')
+    def __init__(self, pipe=None, ctx=None):
+        self.ctx = ctx if ctx is not None else connect(pipe)
         self.desktop = self.ctx.ServiceManager.createInstanceWithContext('com.sun.star.frame.Desktop', self.ctx)
         self.doc = None
         self.paragraphs = {}
@@ -82,6 +84,7 @@ class Worker:
         self.source = None
 
     def open(self, path):
+        started = time.perf_counter()
         if os.path.splitext(path)[1].lower() != '.doc':
             raise ValueError('Only binary Word 97–2003 .doc files are supported. .docx is not supported.')
         with open(path, 'rb') as stream:
@@ -89,6 +92,7 @@ class Worker:
                 raise ValueError('This file is not a binary Word .doc document.')
         working = os.path.join(self.directory, 'input-%s.doc' % time.time_ns())
         shutil.copy2(path, working)
+        import_started = time.perf_counter()
         loaded = self.desktop.loadComponentFromURL(uno.systemPathToFileUrl(working), '_blank', 0, (
             prop('Hidden', True), prop('ReadOnly', False), prop('MacroExecutionMode', 0),
             prop('UpdateDocMode', 0), prop('FilterName', 'MS Word 97'),
@@ -99,7 +103,42 @@ class Worker:
             self.doc.close(True)
         self.doc = loaded
         self.source = path
-        return self.describe(path)
+        describe_started = time.perf_counter()
+        result = self.describe(path)
+        self.last_timings = dict(importMs=(describe_started - import_started) * 1000,
+                                 describeMs=(time.perf_counter() - describe_started) * 1000,
+                                 totalMs=(time.perf_counter() - started) * 1000, processId=os.getpid())
+        return result
+
+    def warmup(self):
+        # Initialize Writer, the binary Word filter, fonts and page layout using
+        # a private, generated scratch document. Never touch a user's document.
+        scratch = os.path.join(self.directory, 'engine-warmup.doc')
+        empty = self.desktop.loadComponentFromURL('private:factory/swriter', '_blank', 0, (
+            prop('Hidden', True), prop('MacroExecutionMode', 0), prop('UpdateDocMode', 0),
+        ))
+        if empty is None:
+            raise RuntimeError('Could not initialize the document engine.')
+        try:
+            empty.Text.String = 'Nebula document engine'
+            cursor = empty.Text.createTextCursor()
+            cursor.gotoEnd(True)
+            cursor.CharFontName = 'Arial'
+            cursor.CharHeight = 11.0
+            empty.storeToURL(uno.systemPathToFileUrl(scratch), (prop('FilterName', 'MS Word 97'), prop('Overwrite', True)))
+        finally:
+            empty.close(True)
+        loaded = self.desktop.loadComponentFromURL(uno.systemPathToFileUrl(scratch), '_blank', 0, (
+            prop('Hidden', True), prop('MacroExecutionMode', 0), prop('UpdateDocMode', 0), prop('FilterName', 'MS Word 97'),
+        ))
+        if loaded is None:
+            raise RuntimeError('Could not initialize the binary Word filter.')
+        try:
+            loaded.CurrentController.PageCount
+        finally:
+            loaded.close(True)
+            os.remove(scratch)
+        return True
 
     def runs(self, paragraph, key=None):
         runs = []
@@ -128,11 +167,14 @@ class Worker:
             if not text:
                 continue
             try:
-                color = int(part.CharColor)
-                runs.append(dict(text=text, font=part.CharFontName or 'Arial', size=float(part.CharHeight or 11),
-                                 bold=float(part.CharWeight or 100) >= 150,
-                                 italic=str(part.CharPosture.value) != 'NONE',
-                                 underline=bool(part.CharUnderline), color='#%06x' % (color if color >= 0 else 0x20242b)))
+                # Sorted names, as required by XMultiPropertySet. This is one
+                # native property read instead of six separate getter calls.
+                color, font, size, posture, underline, weight = part.getPropertyValues((
+                    'CharColor', 'CharFontName', 'CharHeight', 'CharPosture', 'CharUnderline', 'CharWeight'))
+                color = int(color)
+                runs.append(dict(text=text, font=font or 'Arial', size=float(size or 11),
+                                 bold=float(weight or 100) >= 150, italic=str(posture.value) != 'NONE',
+                                 underline=bool(underline), color='#%06x' % (color if color >= 0 else 0x20242b)))
             except Exception:
                 runs.append(dict(text=text, font='Arial', size=11, bold=False, italic=False, underline=False, color='#20242b'))
         # Fields and inline objects can have positions unlike their display text.
@@ -320,33 +362,51 @@ class Worker:
                 os.remove(temporary)
             raise
 
-    def close(self):
+    def close(self, terminate=True):
         if self.doc:
             self.doc.close(True)
-        self.desktop.terminate()
+        if terminate:
+            self.desktop.terminate()
         shutil.rmtree(self.directory, ignore_errors=True)
         return True
 
+    def dispatch(self, method, params):
+        if method == 'ping':
+            return True
+        if method == 'warmup':
+            return self.warmup()
+        if method == 'diagnostics':
+            return getattr(self, 'last_timings', {})
+        if method == 'open':
+            result = self.open(params['path'])
+            self.source_stamp = os.stat(params['path']).st_mtime_ns
+            return result
+        if method == 'save':
+            return self.save(**params)
+        if method == 'close':
+            return self.close(terminate=False)
+        raise ValueError('Unknown document operation.')
 
-def main():
-    worker = Worker(sys.argv[1])
+
+def run_bridge(pipe, component=None, implementation='org.nebula.doc.DocumentJob'):
+    # A trusted, application-owned component performs document operations inside
+    # LibreOffice. Only one JSON request/response crosses UNO per operation.
+    # This does not execute Python or macros supplied by a document.
+    from com.sun.star.beans import NamedValue
+    ctx = connect(pipe)
+    loader = ctx.ServiceManager.createInstanceWithContext('com.sun.star.loader.Python', ctx)
+    component = component or os.path.join(os.path.dirname(os.path.abspath(__file__)), 'worker_component.py')
+    factory = loader.activate(implementation, '', uno.systemPathToFileUrl(component), None)
+    job = factory.createInstanceWithContext(ctx)
     for line in sys.stdin:
         message = json.loads(line)
         try:
-            method, params = message['method'], message.get('params', {})
-            if method == 'ping':
-                result = True
-            elif method == 'open':
-                result = worker.open(params['path'])
-                worker.source_stamp = os.stat(params['path']).st_mtime_ns
-            elif method == 'save':
-                result = worker.save(**params)
-            elif method == 'close':
-                result = worker.close()
-            else:
-                raise ValueError('Unknown document operation.')
-            print(json.dumps(dict(id=message['id'], result=result)), flush=True)
-            if method == 'close':
+            argument = NamedValue()
+            argument.Name, argument.Value = 'Request', json.dumps(message)
+            response = job.execute((argument,))
+            print(response, flush=True)
+            if message['method'] == 'close':
+                ctx.ServiceManager.createInstanceWithContext('com.sun.star.frame.Desktop', ctx).terminate()
                 break
         except Exception as error:
             traceback.print_exc(file=sys.stderr)
@@ -354,4 +414,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_bridge(sys.argv[1])

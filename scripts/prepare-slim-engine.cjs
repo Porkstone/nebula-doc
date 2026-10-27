@@ -60,7 +60,7 @@ async function prepare(projectRoot = path.resolve(__dirname, '..')) {
     retained: { files: retained.length, bytes: sum(retained) },
     removed: { files: removed.length, bytes: sum(removed), categories },
     retainedResources: ['All native executable and DLL files', 'All bundled fonts', 'English UI resources and dictionary bundle', 'Core registry and all document filters', 'Colibre light/dark, raster/SVG icon themes', 'Original notices for retained components'],
-    limits: ['Only English UI translations and dictionary bundle are included.', 'Native code and startup/profile behavior are unchanged.', 'The application continues to reject .docx.'],
+    limits: ['Only English UI translations and dictionary bundle are included.', 'LibreOffice native code is unchanged; application startup behavior is documented separately.', 'The application continues to reject .docx.'],
   }
   await fs.writeFile(path.join(cache, 'slim-package-audit.json'), JSON.stringify({ summary, retained, removed }, null, 2))
   await fs.writeFile(path.join(cache, 'slim-package-summary.json'), JSON.stringify(summary, null, 2))

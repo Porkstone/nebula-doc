@@ -81,20 +81,25 @@ def verify(worker, source, output):
     return dict(signature=signature['id'], bookmarks=len(original_names), frames=len(original_frames), output=output)
 
 
-worker = Worker(sys.argv[1])
-for line in sys.stdin:
-    message = json.loads(line)
-    try:
-        method = message['method']
-        if method == 'ping':
-            result = True
-        elif method == 'close':
-            result = worker.close()
-        else:
-            result = verify(worker, message['params']['source'], message['params']['output'])
-        print(json.dumps(dict(id=message['id'], result=result)), flush=True)
-        if method == 'close':
-            break
-    except Exception as error:
-        traceback.print_exc(file=sys.stderr)
-        print(json.dumps(dict(id=message['id'], error=str(error) or traceback.format_exc())), flush=True)
+def main():
+    worker = Worker(sys.argv[1])
+    for line in sys.stdin:
+        message = json.loads(line)
+        try:
+            method = message['method']
+            if method == 'ping':
+                result = True
+            elif method == 'close':
+                result = worker.close()
+            else:
+                result = verify(worker, message['params']['source'], message['params']['output'])
+            print(json.dumps(dict(id=message['id'], result=result)), flush=True)
+            if method == 'close':
+                break
+        except Exception as error:
+            traceback.print_exc(file=sys.stderr)
+            print(json.dumps(dict(id=message['id'], error=str(error) or traceback.format_exc())), flush=True)
+
+
+if __name__ == '__main__':
+    main()

@@ -10,6 +10,7 @@ export interface SavePayload { paragraphs: EditParagraph[]; bookmarks: Bookmark[
 export interface EngineStatus { available: boolean; message: string }
 export interface DesktopApi {
   status(): Promise<EngineStatus>
+  onStatus(callback: (status: EngineStatus) => void): () => void
   open(): Promise<LegacyDocument | null>
   save(payload: SavePayload, saveAs: boolean): Promise<{ path: string; name: string } | null>
   setDirty(dirty: boolean): void

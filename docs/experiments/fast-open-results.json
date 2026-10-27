@@ -1,0 +1,200 @@
+{
+  "version": "0.1.2-slim.2",
+  "host": "win-srv-01",
+  "branch": "experiment/slim-package",
+  "installer": {
+    "bytes": 306482308,
+    "sha256": "3afb44e68eedda47efc211d239af8b186d9b4043d8ebd5592f0bdc3f8be78550",
+    "file": "Nebula-Doc-Slim-Experiment-Setup-0.1.2-slim.2.exe"
+  },
+  "targetMs": 3000,
+  "budgetedCount": 6,
+  "rangeMs": [
+    1209.1999999955297,
+    2202.39999999851
+  ],
+  "runs": [
+    {
+      "mode": "first-launch-immediate",
+      "welcomeMs": 1037.9176000000002,
+      "beforeOpenMs": 1055.5511000000001,
+      "opens": [
+        {
+          "ms": 6813.89999999851,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 5783.1728,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 478.05779999907827,
+              "describeMs": 274.7635999985505,
+              "totalMs": 755.1909999965574,
+              "processId": 3392
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": false
+        },
+        {
+          "ms": 1209.1999999955297,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 1007.0144,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 531.0431000034441,
+              "describeMs": 462.61129999766126,
+              "totalMs": 997.3575999974855,
+              "processId": 3392
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": true
+        }
+      ]
+    },
+    {
+      "mode": "relaunch-immediate",
+      "welcomeMs": 953.9520999999986,
+      "beforeOpenMs": 979.1228999999985,
+      "opens": [
+        {
+          "ms": 4924.39999999851,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 4342.1432,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 503.39379999786615,
+              "describeMs": 262.3546999966493,
+              "totalMs": 768.2287000061478,
+              "processId": 2436
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": false
+        },
+        {
+          "ms": 1667.3999999985099,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 1099.6313,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 552.605400000175,
+              "describeMs": 528.0904000028386,
+              "totalMs": 1087.5534000006155,
+              "processId": 2436
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": true
+        }
+      ]
+    },
+    {
+      "mode": "engine-ready",
+      "welcomeMs": 1079.3416999999972,
+      "beforeOpenMs": 4521.1803,
+      "opens": [
+        {
+          "ms": 2089.3000000044703,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 1312.5502999999999,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 719.9003999994602,
+              "describeMs": 543.434499995783,
+              "totalMs": 1269.252800004324,
+              "processId": 13012
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": true
+        },
+        {
+          "ms": 2006,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 1162.1611000000003,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 628.7980999986758,
+              "describeMs": 522.2948000009637,
+              "totalMs": 1153.4726999962004,
+              "processId": 13012
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": true
+        }
+      ]
+    },
+    {
+      "mode": "engine-ready",
+      "welcomeMs": 1316.8368999999984,
+      "beforeOpenMs": 4746.835500000001,
+      "opens": [
+        {
+          "ms": 2202.39999999851,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 1089.1322,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 758.9367999971728,
+              "describeMs": 299.98120000527706,
+              "totalMs": 1062.9192000051262,
+              "processId": 11516
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": true
+        },
+        {
+          "ms": 1719,
+          "paragraphs": 255,
+          "bookmarks": 33,
+          "bridgeMs": 1063.8364999999994,
+          "engine": {
+            "available": true,
+            "message": "Local document engine ready",
+            "timings": {
+              "importMs": 511.26579999981914,
+              "describeMs": 534.6164000002318,
+              "totalMs": 1049.7276000023703,
+              "processId": 11516
+            },
+            "program": "C:\\Files\\Development\\Nebula\\nebula-doc\\release\\fast-open\\win-unpacked\\resources\\libreoffice\\program"
+          },
+          "budgetApplies": true
+        }
+      ]
+    }
+  ],
+  "validation": [
+    "Production TypeScript/Vite build",
+    "Three editor/engine lifecycle unit tests",
+    "Five floating-frame guard tests",
+    "Native .doc text and font edits, bookmark create/rename/delete, repeated save/reopen, .docx rejection",
+    "In-process signature/frame regression with all 36 bookmark names and positions preserved",
+    "Packaged Electron UI edit/save/reopen, 255 paragraphs and 33 body bookmarks",
+    "Packaged .docx and renamed-ZIP rejection",
+    "All 5488 retained native-engine resources matched upstream hashes"
+  ]
+}

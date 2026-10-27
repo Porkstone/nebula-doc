@@ -21,13 +21,17 @@ module.exports = async ({ appOutDir }) => {
     const packaged = await fs.readFile(path.join(resources, 'libreoffice', notice))
     if (!original.equals(packaged)) throw new Error(`Upstream LibreOffice notice was changed or omitted: ${notice}`)
   }
-  const packagedMain = asar.extractFile(archive, manifest.main)
-  const sourceMain = await fs.readFile(path.join(__dirname, '..', manifest.main))
-  if (!packagedMain.equals(sourceMain)) throw new Error('Packaged main process does not match its source.')
+  for (const file of ['electron/main.mjs', 'electron/engine.mjs', 'electron/preload.cjs']) {
+    const packagedMain = asar.extractFile(archive, file)
+    const sourceMain = await fs.readFile(path.join(__dirname, '..', file))
+    if (!packagedMain.equals(sourceMain)) throw new Error(`Packaged desktop module does not match its source: ${file}`)
+  }
   const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex')
-  const sourceWorker = await fs.readFile(path.join(__dirname, '../engine/worker.py'))
-  const packagedWorker = await fs.readFile(path.join(resources, 'engine/worker.py'))
-  if (hash(sourceWorker) !== hash(packagedWorker)) throw new Error('Packaged document worker does not match its source.')
+  for (const file of ['worker.py', 'worker_component.py']) {
+    const sourceWorker = await fs.readFile(path.join(__dirname, '../engine', file))
+    const packagedWorker = await fs.readFile(path.join(resources, 'engine', file))
+    if (hash(sourceWorker) !== hash(packagedWorker)) throw new Error(`Packaged document component does not match its source: ${file}`)
+  }
   if (asar.listPackage(archive).some(file => /[\\/](test-output|attachments)[\\/]/.test(file))) throw new Error('Test documents must not be packaged.')
   const audit = JSON.parse(await fs.readFile(path.join(__dirname, '../.cache/slim-package-audit.json'), 'utf8'))
   const engineRoot = path.join(resources, 'libreoffice')

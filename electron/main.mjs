@@ -5,7 +5,9 @@ import { open } from 'node:fs/promises'
 import { DocumentEngine, locateEngine } from './engine.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-let win, engine, currentPath, dirty = false, busy = false, quitting = false
+let win, engine, engineReady, currentPath, dirty = false, busy = false, quitting = false
+let engineStatus = { available: false, message: 'Starting local document engine…' }
+const publishStatus = status => { engineStatus = status; if (win && !win.isDestroyed()) win.webContents.send('engine:status', status) }
 const trusted = event => { if (event.sender !== win?.webContents || event.senderFrame !== win?.webContents.mainFrame) throw new Error('Untrusted request') }
 async function checkDoc(file) {
   if (path.extname(file).toLowerCase() !== '.doc') throw new Error('Only Word 97–2003 .doc files are supported. .docx files cannot be opened.')
@@ -14,14 +16,33 @@ async function checkDoc(file) {
     if (bytes.toString('hex') !== 'd0cf11e0a1b11ae1') throw new Error('This is not a binary Word .doc file. Renamed .docx, RTF and HTML files are not supported.')
   } finally { await handle.close() }
 }
-async function getEngine() {
-  if (!engine) {
+function getEngine() {
+  if (!engineReady) {
     const program = locateEngine(root, process.resourcesPath)
-    if (!program) throw new Error('LibreOffice is required. Run pnpm setup:engine, then restart the app.')
-    engine = new DocumentEngine(program, path.join(app.isPackaged ? process.resourcesPath : root, 'engine', 'worker.py'))
-    try { await engine.start() } catch (error) { await engine.close(); engine = null; throw error }
+    if (!program) {
+      const error = new Error('LibreOffice is required. Run pnpm setup:engine, then restart the app.')
+      publishStatus({ available: false, message: error.message })
+      return Promise.reject(error)
+    }
+    const current = new DocumentEngine(program, path.join(app.isPackaged ? process.resourcesPath : root, 'engine', 'worker.py'), {
+      profileDirectory: path.join(app.getPath('userData'), 'document-engine', '26.8.1.1'),
+    })
+    engine = current
+    publishStatus({ available: true, message: 'Starting local document engine…' })
+    engineReady = (async () => {
+      try {
+        await current.start()
+        await current.request('warmup')
+        publishStatus({ available: true, message: 'Local document engine ready' })
+        return current
+      } catch (error) {
+        await current.close(); engine = null; engineReady = null
+        publishStatus({ available: false, message: error.message })
+        throw error
+      }
+    })()
   }
-  return engine
+  return engineReady
 }
 async function discard() {
   if (!dirty) return true
@@ -29,7 +50,9 @@ async function discard() {
   return response === 1
 }
 async function exclusive(fn) { if (busy) throw new Error('Another document operation is in progress.'); busy = true; try { return await fn() } finally { busy = false } }
-app.whenReady().then(() => {
+const primaryInstance = app.requestSingleInstanceLock()
+if (!primaryInstance) app.quit()
+else app.whenReady().then(() => {
   win = new BrowserWindow({ width: 1500, height: 980, minWidth: 1050, minHeight: 700, backgroundColor: '#f4f3ef', title: 'Nebula · Legacy Word editor',
     webPreferences: { preload: path.join(root, 'electron', 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true } })
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
@@ -47,7 +70,12 @@ app.whenReady().then(() => {
     if (busy) return
     discard().then(async approved => { if (approved) { quitting = true; await engine?.close(); win.destroy(); app.quit() } })
   })
-  ipcMain.handle('engine:status', event => { trusted(event); const available = !!locateEngine(root, process.resourcesPath); return { available, message: available ? 'Local document engine ready' : 'LibreOffice is required. Run pnpm setup:engine and restart.' } })
+  ipcMain.handle('engine:status', event => {
+    trusted(event)
+    return process.env.NEBULA_ENGINE_DIAGNOSTICS === '1'
+      ? { ...engineStatus, timings: engine?.lastTimings, program: engine?.program }
+      : engineStatus
+  })
   ipcMain.handle('document:open', (event) => { trusted(event); return exclusive(async () => {
     if (!await discard()) return null
     const result = await dialog.showOpenDialog(win, { title: 'Open a legacy Word document', properties: ['openFile'], filters: [{ name: 'Word 97–2003 document', extensions: ['doc'] }] })
@@ -67,5 +95,7 @@ app.whenReady().then(() => {
   ipcMain.on('document:dirty', (event, value) => { trusted(event); dirty = value === true; win.setDocumentEdited(dirty) })
   if (process.env.NEBULA_DEV_URL) win.loadURL(process.env.NEBULA_DEV_URL)
   else win.loadFile(path.join(root, 'dist', 'index.html'))
+  void getEngine().catch(() => {})
 })
+app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus() } })
 app.on('window-all-closed', () => app.quit())

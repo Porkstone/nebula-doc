@@ -23,5 +23,5 @@ try {
   await page.getByRole('button', { name: 'Dismiss error' }).click()
   assert.match(await reject(renamed), /not a binary Word \.doc file/)
   assert.equal(await page.locator('.paper').count(), 0)
-  console.log('PASS: packaged Electron rejects .docx and ZIP content renamed to .doc before opening the document engine.')
+  console.log('PASS: packaged Electron rejects .docx and ZIP content renamed to .doc before loading the document.')
 } finally { await app.close() }

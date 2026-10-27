@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyleKit } from '@tiptap/extension-text-style'
@@ -20,7 +20,7 @@ export default function App() {
   const [notice, setNotice] = useState('')
   const [search, setSearch] = useState('')
   const [zoom, setZoom] = useState(100)
-  const [, setRevision] = useState(0)
+  const [revision, setRevision] = useState(0)
   const [bookmarkName, setBookmarkName] = useState<string | null>(null)
   const [renaming, setRenaming] = useState<string | null>(null)
   const [help, setHelp] = useState(false)
@@ -34,10 +34,11 @@ export default function App() {
     onUpdate: () => { if (!loading.current) { setRevision(r => r + 1); setDirty(true); window.nebula?.setDirty(true) } },
   })
   const selection = useEditorState({ editor, selector: ({ editor: e }) => ({ bold: e?.isActive('bold') ?? false, italic: e?.isActive('italic') ?? false, underline: e?.isActive('underline') ?? false, fontFamily: e?.getAttributes('textStyle').fontFamily as string | undefined, fontSize: e?.getAttributes('textStyle').fontSize as string | undefined, color: e?.getAttributes('textStyle').color as string | undefined }) })
-  const payload = editor && document ? fromEditor(editor.state.doc) : null
+  const payload = useMemo(() => editor && document ? fromEditor(editor.state.doc) : null, [editor, document, revision])
   const bookmarks = payload?.bookmarks ?? []
   const words = payload?.paragraphs.map(p => p.runs.map(r => r.text).join('')).join(' ').match(/\S+/g)?.length ?? 0
   useEffect(() => { if (window.nebula) window.nebula.status().then(setStatus).catch(e => setError(e.message)); else setStatus({ available: false, message: 'Browser preview · open the Electron app to edit .doc files' }) }, [])
+  useEffect(() => window.nebula?.onStatus(setStatus), [])
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 5000); return () => clearTimeout(timer) }, [notice])
   const openDocument = useCallback(async () => {
     if (!window.nebula || !editor) return

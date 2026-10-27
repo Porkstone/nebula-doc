@@ -8,7 +8,7 @@ const program = locateEngine(process.cwd())
 if (!program) throw new Error('Run pnpm setup:engine before testing the document engine.')
 const unit = spawnSync(path.join(program, 'python.exe'), ['-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_*.py'], { stdio: 'inherit', windowsHide: true })
 if (unit.status !== 0) throw new Error('Floating-frame guard tests failed.')
-const engine = new DocumentEngine(program, path.resolve('tests/signature_roundtrip.py'))
+const engine = new DocumentEngine(program, path.resolve('tests/signature_fast_roundtrip.py'))
 try {
   await engine.start()
   const result = await engine.request('verify', { source: path.resolve(process.argv[2]), output: path.resolve('test-output/signature-edited.doc') })

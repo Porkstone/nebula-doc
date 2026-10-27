@@ -22,6 +22,8 @@ The engine setup downloads the official LibreOffice 26.8.1 Windows x64 installer
 
 For the compiled desktop app, run `pnpm build` followed by `pnpm start`. `pnpm dev:web` shows the interface in a browser; native file operations are available only in Electron.
 
+The engine starts in the background and warms its binary Word filter using a generated scratch document. Its private profile is reused under the application's user-data directory, separate from a normal LibreOffice installation. A single-instance lock prevents two copies of this app sharing that profile. The first open immediately after launch can still include initialization; later opens use the running engine. Text/font/bookmark traversal and edits run inside an application-owned Python UNO component in LibreOffice, with one JSON exchange per operation. Document-provided macros remain disabled. The startup message reports initialization until it has actually completed.
+
 ## Editing
 
 - Open existing binary `.doc` files with the native file picker.
@@ -53,7 +55,9 @@ pnpm test:signature 'C:\path\to\sample.doc'
 pnpm test:electron 'C:\path\to\sample.doc'
 ```
 
-The unit tests check styled text and bookmark positions across UTF-16 text, emoji, line breaks and table cells. The engine integration test changes text and all supported font properties, creates/renames/deletes bookmarks, saves twice and reopens the document, checks bookmark count and the binary signature, rejects `.docx`, and verifies that the source attachment is unchanged. The signature regression test also runs Python guard tests and verifies that editing text next to a floating frame preserves its contents, size, anchor type and all bookmarks after saving and reopening. The Electron test edits the signature label through the actual desktop UI and native bridge, saves a copy, and reopens it. Test documents and screenshots are written to ignored `test-output/`.
+The unit tests check styled text and bookmark positions across UTF-16 text, emoji, line breaks and table cells, as well as concurrent engine starts and cancellation before spawn. The engine integration test changes text and all supported font properties, creates/renames/deletes bookmarks, saves twice and reopens the document, checks bookmark count and the binary signature, rejects `.docx`, and verifies that the source attachment is unchanged. The signature regression runs inside the same in-process component used in production, verifies frame contents/size/anchor type and all bookmarks after saving and reopening, and also runs Python guard tests. The Electron test edits the signature label through the actual desktop UI and native bridge, saves a copy, and reopens it. Test documents and screenshots are written to ignored `test-output/`.
+
+With `NEBULA_TEST_EXECUTABLE` pointing to the packaged app, run `node scripts/performance-smoke.mjs 'C:\path\to\sample.doc'` for the supplied sample. It records first-launch and relaunch openings separately, then checks that later openings and openings after initialization take under three seconds through the real editor UI. The native file picker is stubbed so time spent choosing a file is excluded. Measurements are written to `test-output/document-open-performance.json`; they apply to the tested document and machine, not arbitrary files or hardware.
 
 ## Build a Windows installer
 
@@ -62,11 +66,11 @@ pnpm setup:engine
 pnpm dist:win
 ```
 
-On the local `experiment/slim-package` branch, the NSIS installer is written to `release/slim-experiment/Nebula-Doc-Slim-Experiment-Setup-0.1.2-slim.1.exe`. It installs as **Nebula Doc Slim Experiment**, with separate application identity, shortcuts and Electron application-data directory, so it can coexist with the standard Nebula Doc installation. It includes a private LibreOffice runtime and Python bridge. The installer is unsigned unless signing credentials are provided through electron-builder's standard signing configuration.
+On the local `experiment/slim-package` branch, the current NSIS installer is written to `release/fast-open/Nebula-Doc-Slim-Experiment-Setup-0.1.2-slim.2.exe`. It updates **Nebula Doc Slim Experiment**, with separate application identity, shortcuts and Electron application-data directory from the standard Nebula Doc installation. The earlier packaging-only build remains under `release/slim-experiment`. The installer is unsigned unless signing credentials are provided through electron-builder's standard signing configuration.
 
 The packaging hook stages a reduced engine in `.cache/libreoffice-slim` without changing the full engine in `.cache/libreoffice`. It retains all native libraries/executables and fonts, the English dictionary bundle, English UI resources, Colibre themes and core document configuration. It excludes other UI translations/dictionaries, optional extensions, offline help, galleries, templates/wizards, surplus icon themes and generated Python bytecode. Electron ships only its `en-US` and `en-GB` locale packs. Text in other languages and its encoding support are retained, but their local UI translations and dictionary/hyphenation resources are absent in this experiment. Layout of multilingual documents needs local review.
 
-The hook writes a file-by-file audit with SHA-256 hashes to `.cache/slim-package-audit.json`. After packaging, every retained engine file is verified against that audit; the packaged summary is in `resources/licenses/slim-package-summary.json`. Original third-party notices for retained resources are preserved. Engine initialization, temporary profile behavior and the editing bridge are unchanged, allowing this experiment to isolate packaging changes.
+The hook writes a file-by-file audit with SHA-256 hashes to `.cache/slim-package-audit.json`. After packaging, every retained engine file is verified against that audit; the packaged summary is in `resources/licenses/slim-package-summary.json`. Original third-party notices for retained resources are preserved. Version `0.1.2-slim.1` isolated packaging changes; `0.1.2-slim.2` additionally improves startup and the document bridge as described above. LibreOffice's own native files are unchanged in both builds.
 
 `pnpm package:engine` stages the reduced runtime independently. Development commands still use the full cached engine by default; set `NEBULA_LIBREOFFICE` to the absolute `.cache/libreoffice-slim` path to test the reduced one during development. Test the packaged application using `NEBULA_TEST_EXECUTABLE` and the existing Electron smoke script. The previous installers under `release/v0.1.1` are preserved.
 
