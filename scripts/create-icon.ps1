@@ -24,6 +24,7 @@ $graphics.DrawPath($pen, $right)
 $memory = New-Object System.IO.MemoryStream
 $bitmap.Save($memory, [System.Drawing.Imaging.ImageFormat]::Png)
 $pngBytes = $memory.ToArray()
+[System.IO.File]::WriteAllBytes((Join-Path $buildPath 'icon.png'), $pngBytes)
 $iconFile = [System.IO.File]::Create((Join-Path $buildPath 'icon.ico'))
 $writer = New-Object System.IO.BinaryWriter($iconFile)
 $writer.Write([uint16]0); $writer.Write([uint16]1); $writer.Write([uint16]1)
@@ -31,4 +32,4 @@ $writer.Write([byte]0); $writer.Write([byte]0); $writer.Write([byte]0); $writer.
 $writer.Write([uint16]1); $writer.Write([uint16]32); $writer.Write([uint32]$pngBytes.Length); $writer.Write([uint32]22)
 $writer.Write($pngBytes)
 $writer.Dispose(); $memory.Dispose(); $pen.Dispose(); $left.Dispose(); $right.Dispose(); $graphics.Dispose(); $bitmap.Dispose()
-Write-Output 'Created build/icon.ico from the Nebula book icon.'
+Write-Output 'Created build/icon.ico and build/icon.png from the Nebula book icon.'

@@ -3,7 +3,7 @@
   "private": true,
   "author": "Nebula Doc contributors",
   "license": "MIT",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "A local editor for binary Word 97–2003 documents",
   "main": "electron/main.mjs",
   "type": "module",
@@ -16,7 +16,9 @@
     "test:electron": "node scripts/electron-smoke.mjs",
     "test:sample": "node scripts/roundtrip.mjs",
     "test:signature": "node scripts/signature-roundtrip.mjs",
-    "dist:win": "pnpm build && electron-builder --win nsis",
+    "test:installer": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-installer.ps1",
+    "package:chocolatey": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-chocolatey.ps1",
+    "dist:win": "pnpm build && electron-builder --win nsis --x64 --publish never",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -24,7 +26,7 @@
     "electronDist": "node_modules/electron/dist",
     "afterPack": "scripts/after-pack.cjs",
     "appId": "com.nebula.doc",
-    "productName": "Nebula Doc",
+    "productName": "nebula-doc",
     "directories": {
       "output": "release"
     },
@@ -59,13 +61,30 @@
       }
     ],
     "win": {
-      "target": "nsis",
-      "artifactName": "Nebula-Doc-Setup-${version}.${ext}"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "executableName": "nebula-doc",
+      "icon": "build/icon.ico",
+      "artifactName": "nebula-doc-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": false,
+      "deleteAppDataOnUninstall": false
+    },
+    "copyright": "Copyright © 2026 Nebula Doc contributors",
+    "publish": null
   },
   "devDependencies": {
     "@electron/asar": "3.4.1",
