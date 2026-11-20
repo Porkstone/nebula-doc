@@ -1,0 +1,16 @@
+# Releasing Nebula Doc
+
+Chocolatey packaging and publication are manual release steps, using the exact installer already uploaded to GitHub. The GitHub repository must be public so that Chocolatey users and moderators can download the installer and review the package source.
+
+1. Update the version in `package.json` and add a `CHANGELOG.md` entry. Chocolatey releases use a stable `major.minor.patch` version. The status-bar version label, installer filename and Chocolatey package version are all taken from `package.json`.
+2. On Windows x64, run `pnpm install --frozen-lockfile`, `pnpm setup:engine`, `pnpm test`, `pnpm build`, and the document regressions against a sample `.doc`: `pnpm test:sample`, `pnpm test:signature` and `pnpm test:electron`. Then run `pnpm dist:win`. The installer is written to `release/nebula-doc-<version>.exe`.
+3. Verify the installer on a clean machine with `pnpm test:installer -Sample 'C:\path\to\sample.doc'`. This checks silent all-users installation, `nebula-doc.exe`, the licence notices, uninstall registration and version, the Start menu shortcut, the Electron UI test against the installed application, silent uninstall and registry cleanup. The installer is unsigned unless signing credentials are supplied through electron-builder's signing configuration.
+4. Commit and push the verified source to `main`. Create a GitHub release tagged `v<version>` and upload `release/nebula-doc-<version>.exe` (for example, `nebula-doc-1.0.0.exe`) with a SHA-256 checksum file for that exact installer. The installed executable remains `nebula-doc.exe`.
+5. Verify the uploaded asset's digest matches the local installer. Do not upload old release assets to a newer release.
+6. Run `pnpm package:chocolatey` against that same installer. It synchronises the package version, release URL and installer SHA-256 with `package.json` and `release/nebula-doc-<version>.exe`, then creates `release/nebula-doc.<version>.nupkg`. It keeps the nuspec's icon URL, which uses jsDelivr pinned to a public commit containing `build/icon.png`; if the icon changes, update that URL to the new commit. The Chocolatey Community Repository does not allow GitHub Raw icon URLs. Keep the nuspec copyright consistent with `LICENSE`.
+7. On a clean Windows machine, test `choco install nebula-doc --version <version> --source <absolute-release-folder> -y` and `choco uninstall nebula-doc -y`. Confirm the download checksum and the install and uninstall results. Upload the tested `.nupkg` to the matching GitHub release and commit the generated packaging metadata.
+8. Configure the Chocolatey CLI API key privately using the instructions on the [account page](https://community.chocolatey.org/account). Submit with `choco push release/nebula-doc.<version>.nupkg --source https://push.chocolatey.org/`. Browser-based package uploads are no longer supported. Confirm the version appears as pending moderation, and respond to automated checks or moderator feedback.
+
+Do not commit API keys, certificates or credentials. A successful upload is a submission for review, not approval. Publish only after testing the exact package and the released installer.
+
+The Chocolatey uninstall pattern is `nebula-doc *`, with a space, so it never matches the separate `nebula-docx` application. Keep that pattern if the product name changes.

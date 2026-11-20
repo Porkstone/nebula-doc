@@ -2,6 +2,22 @@
 
 A Windows x64 Electron application for editing **binary Word 97–2003 `.doc` files**. Built with React, TypeScript, Tailwind, Lucide and TipTap. Documents are processed locally by an isolated LibreOffice/UNO worker. No account, cloud service, Microsoft Word installation or backend is required.
 
+## Install
+
+Download `nebula-doc-<version>.exe` from [GitHub Releases](https://github.com/Porkstone/nebula-doc/releases) and run it. It installs for all users, so it needs administrator rights. The installed executable is `nebula-doc.exe`. The installer is approximately 500 MB because it includes a private LibreOffice runtime, and it is unsigned.
+
+### Install with Chocolatey
+
+Chocolatey project page: [nebula-doc on Chocolatey Community](https://community.chocolatey.org/packages/nebula-doc). New package versions are available only after Chocolatey's automated checks and moderator approval.
+
+Once a version is approved, [install Chocolatey](https://docs.chocolatey.org/en-us/choco/setup/) if needed, open **PowerShell as Administrator**, and run:
+
+```powershell
+choco install nebula-doc --yes
+```
+
+Upgrade with `choco upgrade nebula-doc --yes` and remove with `choco uninstall nebula-doc --yes`.
+
 ## Licence
 
 Nebula Doc's original application code is licensed under the [MIT License](LICENSE), copyright 2026 Nebula Doc contributors. Bundled third-party software retains its own licences. In particular, LibreOffice is distributed under MPL 2.0 and includes components with additional terms; it is not relicensed as MIT. See [third-party notices and source availability](THIRD_PARTY_NOTICES.txt).
@@ -25,7 +41,7 @@ For the compiled desktop app, run `pnpm build` followed by `pnpm start`. `pnpm d
 ## Editing
 
 - Open existing binary `.doc` files with the native file picker.
-- Edit body text and text inside existing table cells.
+- Edit body text and text inside existing table cells. Table cell shading is shown, so light text on a shaded cell (such as a coloured disclaimer footer) stays visible; the shading itself is preserved and not editable.
 - Change font family, point size, bold, italic, underline and text color.
 - Navigate, create, rename and delete body bookmarks. Both text-range and cursor-position bookmarks are supported. Bookmark endpoints move with the editor content.
 - Undo/redo, zoom, bookmark search, Save and Save a copy.
@@ -62,6 +78,10 @@ pnpm setup:engine
 pnpm dist:win
 ```
 
-The NSIS installer is written to `release/Nebula-Doc-Setup-0.1.1.exe`. It includes a private LibreOffice runtime and Python bridge. The installer is unsigned unless signing credentials are provided through electron-builder's standard signing configuration. LibreOffice increases the installer size substantially.
+The NSIS installer is written to `release/nebula-doc-<version>.exe` (for example, `release/nebula-doc-1.0.0.exe`). It installs for all users, and the installed executable is `nebula-doc.exe`. It includes a private LibreOffice runtime and Python bridge. The installer is unsigned unless signing credentials are provided through electron-builder's standard signing configuration. LibreOffice increases the installer size substantially.
 
 LibreOffice's license and third-party notices are included in the runtime distribution (`resources/libreoffice/license.txt`, `LICENSE.html`, `NOTICE` and `readmes/`). See the [LibreOffice license](https://www.libreoffice.org/licenses/) for redistribution terms and [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt) for the version-specific source downloads. The app uses LibreOffice's documented [legacy Word conversion filter](https://help.libreoffice.org/latest/en-US/text/shared/guide/convertfilters.html). Electron's renderer is sandboxed with context isolation and a narrow preload API; native macros and document link updates are disabled.
+
+## Release and Chocolatey
+
+See [RELEASING.md](RELEASING.md) for the build, checksum, installer verification and Chocolatey submission steps, and [CHANGELOG.md](CHANGELOG.md) for release history. A Chocolatey submission must pass automated checks and moderator approval; a pending submission is not an approved package.

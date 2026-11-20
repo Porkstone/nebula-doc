@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>nebula-doc</id>
+    <version>1.0.0</version>
+    <title>Nebula Doc</title>
+    <authors>Nebula Doc contributors</authors>
+    <owners>Porkstone</owners>
+    <copyright>Copyright (c) 2026 Nebula Doc contributors</copyright>
+    <projectUrl>https://github.com/Porkstone/nebula-doc</projectUrl>
+    <iconUrl>https://cdn.jsdelivr.net/gh/Porkstone/nebula-doc@26eac34074b734d6f794da9a87215294484be869/build/icon.png</iconUrl>
+    <packageSourceUrl>https://github.com/Porkstone/nebula-doc/tree/main/packaging/chocolatey</packageSourceUrl>
+    <projectSourceUrl>https://github.com/Porkstone/nebula-doc/tree/v1.0.0</projectSourceUrl>
+    <docsUrl>https://github.com/Porkstone/nebula-doc#readme</docsUrl>
+    <bugTrackerUrl>https://github.com/Porkstone/nebula-doc/issues</bugTrackerUrl>
+    <licenseUrl>https://github.com/Porkstone/nebula-doc/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Offline editor for legacy binary Word 97-2003 .doc files, with text, font and bookmark editing.</summary>
+    <description><![CDATA[Nebula Doc is an offline Windows desktop editor for legacy binary Microsoft Word 97-2003 `.doc` files. Microsoft Word is not required.
+
+## Features
+
+- Open existing binary `.doc` files and save real Word 97-2003 `.doc` files.
+- Edit body text and text inside existing table cells, including shaded cells.
+- Change font family, size, bold, italic, underline and text colour.
+- Navigate, create, rename and delete bookmarks.
+- Undo and redo, zoom, bookmark search, Save and Save a copy.
+- A `.doc.bak` copy is made before the first overwrite of an existing file.
+- No accounts, uploads, telemetry or cloud services. Documents are processed locally.
+
+## Notes
+
+- Requires Windows 10 or 11 x64.
+- Documents are processed by a private LibreOffice runtime bundled with the application. It does not install LibreOffice system-wide and does not affect an existing LibreOffice installation. LibreOffice is distributed under the Mozilla Public License 2.0; its licence and notices are installed with the application.
+- `.docx`, RTF, encrypted documents and Word versions earlier than Word 97 are not supported.
+- This is a focused editor, not a complete Word replacement. Headers, footers, fields, drawings and page settings are preserved but are not editable, and the editing view does not reproduce Word's pagination.
+- The installer is approximately 500 MB because it includes the LibreOffice runtime.
+- The installed executable is `nebula-doc.exe`. This package installs for all users and requires administrator rights. The installer is unsigned.
+
+Nebula Doc is not affiliated with or endorsed by Microsoft or The Document Foundation.]]></description>
+    <releaseNotes>https://github.com/Porkstone/nebula-doc/releases/tag/v1.0.0</releaseNotes>
+    <tags>nebula-doc doc word word97 legacy editor bookmarks offline libreoffice admin</tags>
+  </metadata>
+  <files><file src="tools\**" target="tools" /></files>
+</package>
