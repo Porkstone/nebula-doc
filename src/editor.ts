@@ -1,6 +1,7 @@
 import { Extension, Node, mergeAttributes } from '@tiptap/core'
 import type { JSONContent } from '@tiptap/core'
 import ParagraphExtension from '@tiptap/extension-paragraph'
+import { TableCell } from '@tiptap/extension-table'
 import { Plugin } from '@tiptap/pm/state'
 import type { Node as PMNode } from '@tiptap/pm/model'
 import type { Anchor, Block, Bookmark, LegacyDocument, Run, SavePayload } from './types'
@@ -8,6 +9,11 @@ import type { Anchor, Block, Bookmark, LegacyDocument, Run, SavePayload } from '
 export const LegacyParagraph = ParagraphExtension.extend({
   addAttributes() { return { ...this.parent?.(), blockId: { default: null, renderHTML: a => ({ 'data-block-id': a.blockId }) }, locked: { default: false, renderHTML: a => a.locked ? { 'data-locked': 'true', contenteditable: 'false' } : {} } } },
   addKeyboardShortcuts() { return { Enter: () => this.editor.commands.setHardBreak() } },
+})
+const hexColor = (value: unknown) => typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value) ? value : null
+// Display-only cell shading from the source document; saving never changes it.
+export const LegacyTableCell = TableCell.extend({
+  addAttributes() { return { ...this.parent?.(), background: { default: null, parseHTML: element => hexColor(element.getAttribute('data-background')), renderHTML: a => hexColor(a.background) ? { 'data-background': a.background, style: `background-color: ${a.background}` } : {} } } },
 })
 export const BookmarkNode = Node.create({
   name: 'bookmark', group: 'inline', inline: true, atom: true, selectable: false,
@@ -43,7 +49,7 @@ export function toEditor(document: LegacyDocument): JSONContent {
   const convert = (blocks: Block[]): JSONContent[] => blocks.map(block => {
     if (block.type === 'table') {
       const columns = Math.max(1, ...block.rows.map(row => row.cells.length))
-      return { type: 'table', content: block.rows.map(row => ({ type: 'tableRow', content: row.cells.map((cell, index) => ({ type: 'tableCell', attrs: { colspan: cell.colspan ?? Math.floor((index + 1) * columns / row.cells.length) - Math.floor(index * columns / row.cells.length) }, content: convert(cell.blocks) })) })) }
+      return { type: 'table', content: block.rows.map(row => ({ type: 'tableRow', content: row.cells.map((cell, index) => ({ type: 'tableCell', attrs: { colspan: cell.colspan ?? Math.floor((index + 1) * columns / row.cells.length) - Math.floor(index * columns / row.cells.length), background: hexColor(cell.background) }, content: convert(cell.blocks) })) })) }
     }
     const points = [...(anchors.get(block.id) ?? [])].sort((a, b) => a.offset - b.offset || a.name.localeCompare(b.name))
     const content: JSONContent[] = []

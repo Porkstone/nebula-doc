@@ -43,6 +43,21 @@ def is_zero_width_floating_frame(portion):
         return False
 
 
+def cell_background(cell):
+    """Solid table-cell shading as #rrggbb, or None when the cell is unshaded.
+
+    Word shading often pairs a dark fill with white text; without the fill
+    such text is invisible in the editing view. Display only: saving never
+    writes cell properties, so the original shading is retained as-is."""
+    try:
+        if cell.BackTransparent:
+            return None
+        color = int(cell.BackColor)
+    except Exception:
+        return None
+    return '#%06x' % (color & 0xFFFFFF) if color >= 0 else None
+
+
 def cursor_at(paragraph, start, end=None):
     cursor = paragraph.Text.createTextCursorByRange(paragraph.Start)
     remaining = start
@@ -200,7 +215,12 @@ class Worker:
                     if not match:
                         continue
                     row = int(match.group(2))
-                    cells_by_row.setdefault(row, []).append(dict(blocks=self.blocks(item.getCellByName(cell_name))))
+                    cell = item.getCellByName(cell_name)
+                    entry = dict(blocks=self.blocks(cell))
+                    background = cell_background(cell)
+                    if background:
+                        entry['background'] = background
+                    cells_by_row.setdefault(row, []).append(entry)
                 for row in sorted(cells_by_row):
                     rows.append(dict(cells=cells_by_row[row]))
                 output.append(dict(type='table', rows=rows))

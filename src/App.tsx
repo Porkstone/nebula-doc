@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyleKit } from '@tiptap/extension-text-style'
-import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table'
+import { Table, TableRow, TableHeader } from '@tiptap/extension-table'
 import TextAlign from '@tiptap/extension-text-align'
 import { EditorState } from '@tiptap/pm/state'
 import { ArrowDownToLine, ArrowUpRight, Bookmark as BookmarkIcon, BookOpen, Check, ChevronDown, ChevronRight, CircleHelp, FileText, FolderOpen, LoaderCircle, Minus, Plus, Search, ShieldCheck, Sparkles, X, Bold, Italic, Underline, Undo2, Redo2, Pencil, Trash2, Copy, PanelLeftClose } from 'lucide-react'
-import { BookmarkNode, fromEditor, LegacyParagraph, PreserveStructure, toEditor } from './editor'
+import { BookmarkNode, fromEditor, LegacyParagraph, LegacyTableCell, PreserveStructure, toEditor } from './editor'
 import type { EngineStatus, LegacyDocument } from './types'
 
 const fonts = ['Arial', 'Calibri', 'Cambria', 'Courier New', 'Georgia', 'Tahoma', 'Times New Roman', 'Trebuchet MS', 'Verdana']
@@ -28,7 +28,7 @@ export default function App() {
   const [activeBookmark, setActiveBookmark] = useState('')
   const loading = useRef(false)
   const editor = useEditor({
-    extensions: [StarterKit.configure({ paragraph: false, heading: false, blockquote: false, codeBlock: false, horizontalRule: false, bulletList: false, orderedList: false, listItem: false, link: false, strike: false, code: false }), LegacyParagraph, TextStyleKit, Table.configure({ resizable: false }), TableRow, TableCell, TableHeader, TextAlign.configure({ types: ['paragraph'] }), BookmarkNode, PreserveStructure],
+    extensions: [StarterKit.configure({ paragraph: false, heading: false, blockquote: false, codeBlock: false, horizontalRule: false, bulletList: false, orderedList: false, listItem: false, link: false, strike: false, code: false }), LegacyParagraph, TextStyleKit, Table.configure({ resizable: false }), TableRow, LegacyTableCell, TableHeader, TextAlign.configure({ types: ['paragraph'] }), BookmarkNode, PreserveStructure],
     content: '<p></p>', editable: false,
     editorProps: { attributes: { 'aria-label': 'Document text editor', spellcheck: 'true' }, handleDrop: () => true },
     onUpdate: () => { if (!loading.current) { setRevision(r => r + 1); setDirty(true); window.nebula?.setDirty(true) } },
