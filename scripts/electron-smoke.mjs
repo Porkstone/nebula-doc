@@ -45,14 +45,30 @@ try {
   await page.keyboard.type(' QA-1234')
   assert.ok((await signature.innerText()).includes('Signature Code: QA-1234'))
   await page.getByRole('button', { name: 'CustomerName', exact: true }).click()
+  // TipTap's focus command restores DOM focus on the next animation frame.
+  // Wait for that restoration before sending keystrokes, including under load.
+  await page.waitForFunction(() => {
+    const anchor = window.getSelection()?.anchorNode
+    const element = anchor?.nodeType === Node.ELEMENT_NODE ? anchor : anchor?.parentElement
+    return document.activeElement === document.querySelector('.tiptap') && element?.closest('[data-block-id]')?.getAttribute('data-block-id') === 'p9'
+  })
   await page.keyboard.type('Alex Morgan')
+  assert.ok((await page.locator('[data-block-id=p9]').innerText()).includes('Alex Morgan'))
   await page.keyboard.down('Shift')
   for (let index = 0; index < 'Alex Morgan'.length; index++) await page.keyboard.press('ArrowLeft')
   await page.keyboard.up('Shift')
+  const settleFocus = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+  await settleFocus()
   await page.getByRole('combobox', { name: 'Font family' }).selectOption('Georgia')
+  await settleFocus()
+  assert.ok(await page.locator('[data-block-id=p9] span[style*="Georgia"]').count(), 'Font family should apply before saving')
   await page.getByRole('combobox', { name: 'Font size', exact: true }).selectOption('14')
+  await settleFocus()
+  assert.ok(await page.locator('[data-block-id=p9] span[style*="Georgia"]').count(), 'Font size must retain the selected family')
   await page.getByRole('button', { name: 'bold', exact: true }).click()
+  await settleFocus()
   await page.locator('.tiptap').press('End')
+  await page.waitForFunction(() => window.getSelection()?.isCollapsed)
   await page.locator('.tiptap').press('Enter')
   await page.keyboard.type('Second line')
   assert.ok((await page.locator('[data-block-id=p9]').innerText()).includes('Alex Morgan'))
