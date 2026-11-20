@@ -3,7 +3,7 @@
   "private": true,
   "author": "Nebula Doc contributors",
   "license": "MIT",
-  "version": "0.1.2-slim.2",
+  "version": "0.1.2-slim.3",
   "description": "A local editor for binary Word 97–2003 documents",
   "main": "electron/main.mjs",
   "type": "module",
