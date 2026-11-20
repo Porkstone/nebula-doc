@@ -4,7 +4,7 @@ import unittest
 from types import SimpleNamespace
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'engine'))
-from worker import is_zero_width_floating_frame
+from worker import cell_background, is_zero_width_floating_frame
 
 
 class Enumeration:
@@ -49,6 +49,17 @@ class FloatingFrameTests(unittest.TestCase):
         self.assertFalse(is_zero_width_floating_frame(portion([])))
         self.assertFalse(is_zero_width_floating_frame(portion([frame('AT_PAGE')])))
         self.assertFalse(is_zero_width_floating_frame(SimpleNamespace(String='')))
+
+
+class CellBackgroundTests(unittest.TestCase):
+    def test_solid_shading_is_reported_as_hex(self):
+        self.assertEqual(cell_background(SimpleNamespace(BackTransparent=False, BackColor=0x2562C2)), '#2562c2')
+        self.assertEqual(cell_background(SimpleNamespace(BackTransparent=False, BackColor=0xFFFFFF)), '#ffffff')
+
+    def test_unshaded_or_unreadable_cells_have_no_background(self):
+        self.assertIsNone(cell_background(SimpleNamespace(BackTransparent=True, BackColor=0x2562C2)))
+        self.assertIsNone(cell_background(SimpleNamespace(BackTransparent=False, BackColor=-1)))
+        self.assertIsNone(cell_background(SimpleNamespace()))
 
 
 if __name__ == '__main__':
