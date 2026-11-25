@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Reduce the installer from about 500 MB to about 290 MB (476.5 MiB to 272.9 MiB) by leaving out LibreOffice components the headless document engine does not use: spelling, hyphenation and thesaurus dictionaries and other bundled extensions, interface translations, translated configuration labels, alternative icon themes and PDF import. Document opening, editing and saving are unchanged. LibreOffice messages are shown in English.
+
 ## 1.0.0
 
 - Show table cell shading in the editing view. Light text on a shaded cell, such as a white disclaimer on a blue footer, was previously invisible. The shading is display-only and is preserved unchanged when saving.

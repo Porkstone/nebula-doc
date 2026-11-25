@@ -12,9 +12,13 @@ LibreOffice 26.8.1.1 for Windows x64, build
 bf6ef2662401c7d6dce671ab4deb26ee0af3a7c1, from The Document Foundation.
 Nebula's Python worker and Electron application are separate original files;
 no changes have been made to LibreOffice's source or executable files.
+Unused optional resources are omitted from the bundled runtime: spelling,
+hyphenation and thesaurus dictionaries and other bundled extensions, interface
+translations, translated configuration labels, alternative icon themes and
+PDF import.
 
 LibreOffice is made available under the Mozilla Public License 2.0 and
-includes components, dictionaries, fonts and artwork with additional terms.
+includes components, fonts and artwork with additional terms.
 The upstream notices, copyright statements and full licence texts are kept
 in resources/libreoffice/license.txt, LICENSE.html, NOTICE, readmes/ and
 the component-specific licence files throughout that directory.

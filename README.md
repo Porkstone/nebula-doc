@@ -4,7 +4,7 @@ A Windows x64 Electron application for editing **binary Word 97–2003 `.doc` fi
 
 ## Install
 
-Download `nebula-doc-<version>.exe` from [GitHub Releases](https://github.com/Porkstone/nebula-doc/releases) and run it. It installs for all users, so it needs administrator rights. The installed executable is `nebula-doc.exe`. The installer is approximately 500 MB because it includes a private LibreOffice runtime, and it is unsigned.
+Download `nebula-doc-<version>.exe` from [GitHub Releases](https://github.com/Porkstone/nebula-doc/releases) and run it. It installs for all users, so it needs administrator rights. The installed executable is `nebula-doc.exe`. The installer is approximately 290 MB because it includes a private LibreOffice runtime, and it is unsigned.
 
 ### Install with Chocolatey
 
@@ -78,7 +78,7 @@ pnpm setup:engine
 pnpm dist:win
 ```
 
-The NSIS installer is written to `release/nebula-doc-<version>.exe` (for example, `release/nebula-doc-1.0.0.exe`). It installs for all users, and the installed executable is `nebula-doc.exe`. It includes a private LibreOffice runtime and Python bridge. The installer is unsigned unless signing credentials are provided through electron-builder's standard signing configuration. LibreOffice increases the installer size substantially.
+The NSIS installer is written to `release/nebula-doc-<version>.exe` (for example, `release/nebula-doc-1.0.1.exe`). It installs for all users, and the installed executable is `nebula-doc.exe`. It includes a private LibreOffice runtime and Python bridge. The installer is unsigned unless signing credentials are provided through electron-builder's standard signing configuration. LibreOffice increases the installer size substantially. The build leaves out LibreOffice components the headless engine does not use: spelling, hyphenation and thesaurus dictionaries and other bundled extensions, interface translations, translated configuration labels (en-US is kept), alternative icon themes (Colibre is kept) and PDF import. `scripts/after-pack.cjs` fails the build if any of these are packaged or a required engine file is missing.
 
 LibreOffice's license and third-party notices are included in the runtime distribution (`resources/libreoffice/license.txt`, `LICENSE.html`, `NOTICE` and `readmes/`). See the [LibreOffice license](https://www.libreoffice.org/licenses/) for redistribution terms and [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt) for the version-specific source downloads. The app uses LibreOffice's documented [legacy Word conversion filter](https://help.libreoffice.org/latest/en-US/text/shared/guide/convertfilters.html). Electron's renderer is sandboxed with context isolation and a narrow preload API; native macros and document link updates are disabled.
 

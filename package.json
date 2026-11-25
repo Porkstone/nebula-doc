@@ -3,7 +3,7 @@
   "private": true,
   "author": "Nebula Doc contributors",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A local editor for binary Word 97–2003 documents",
   "main": "electron/main.mjs",
   "type": "module",
@@ -56,7 +56,16 @@
         "to": "libreoffice",
         "filter": [
           "**/*",
-          "!*.msi"
+          "!*.msi",
+          "!share/extensions/**",
+          "!program/resource/**",
+          "program/resource/common/**",
+          "!share/registry/res/**",
+          "share/registry/res/*_en-US.xcd",
+          "!share/config/images_*.zip",
+          "share/config/images_colibre.zip",
+          "!share/xpdfimport/**",
+          "!program/xpdfimport.exe"
         ]
       }
     ],
